@@ -1,4 +1,5 @@
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use std::env;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -16,13 +17,17 @@ async fn manual_hello() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+
+    let app_port = env::var("BLOG_SERVICE_PORT").expect("BLOG_SERVICE_PORT not found.");
+    let app_url = format!("0.0.0.0:{}", &app_port);
+
     HttpServer::new(|| {
         App::new()
             .service(hello)
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
     })
-        .bind(("0.0.0.0", 8001))?
+        .bind(&app_url)?
         .run()
         .await
 }
