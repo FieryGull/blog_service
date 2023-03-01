@@ -1,0 +1,33 @@
+services:
+  auth_service:
+    container_name: auth_service
+    build:
+      context: ./auth/
+      dockerfile: Dockerfile
+    ports:
+      - $AUTH_SERVICE_PORT:$AUTH_SERVICE_PORT
+    env_file:
+      - .env
+    links:
+      - db
+
+  blog_service:
+    container_name: blog_service
+    build:
+      context: ./blog/
+      dockerfile: Dockerfile
+    ports:
+      - $BLOG_SERVICE_PORT:$BLOG_SERVICE_PORT
+    env_file:
+      - .env
+    links:
+      - db
+
+  db:
+    container_name: postgres
+    image: postgres
+    restart: always
+    ports:
+      - $DB_PORT:$DB_PORT
+    env_file:
+      - .env
