@@ -2,7 +2,7 @@ services:
   auth_service:
     container_name: auth_service
     build:
-      context: ./auth/
+      context: auth_service/
       dockerfile: Dockerfile
     ports:
       - $AUTH_SERVICE_PORT:$AUTH_SERVICE_PORT
@@ -11,13 +11,13 @@ services:
     links:
       - db
 
-  blog_service:
-    container_name: blog_service
+  post_service:
+    container_name: post_service
     build:
-      context: ./blog/
+      context: post_service/
       dockerfile: Dockerfile
     ports:
-      - $BLOG_SERVICE_PORT:$BLOG_SERVICE_PORT
+      - $POST_SERVICE_PORT:$POST_SERVICE_PORT
     env_file:
       - .env
     links:
@@ -29,5 +29,7 @@ services:
     restart: always
     ports:
       - $DB_PORT:$DB_PORT
+    volumes:
+      - ./postgres/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
     env_file:
       - .env
