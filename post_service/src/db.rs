@@ -24,10 +24,6 @@ lazy_static! {
     };
 }
 
-pub fn init() {
-    lazy_static::initialize(&POOL);
-}
-
 pub fn connection() -> Result<DbConnection, CustomError> {
     POOL.get()
         .map_err(|e| CustomError::new(500, format!("Failed getting db connection: {}", e)))
