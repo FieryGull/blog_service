@@ -1,31 +1,18 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{App, HttpServer};
 use std::env;
 
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
-}
-
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
-}
-
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
-}
+mod db;
+mod users;
+mod error_handler;
+mod schema;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
     let app_port = env::var("AUTH_SERVICE_PORT").expect("AUTH_SERVICE_PORT not found.");
     let app_url = format!("0.0.0.0:{}", &app_port);
-
     HttpServer::new(|| {
         App::new()
-            .service(hello)
-            .service(echo)
-            .route("/hey", web::get().to(manual_hello))
+            .configure(users::init_routes)
     })
         .bind(&app_url)?
         .run()
