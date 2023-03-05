@@ -29,7 +29,14 @@ impl fmt::Display for CustomError {
 impl From<DieselError> for CustomError {
     fn from(error: DieselError) -> CustomError {
         match error {
-            DieselError::DatabaseError(_, err) => CustomError::new(409, err.message().to_string()),
+            DieselError::DatabaseError(_, err) => {
+                if err.message().to_string() == "duplicate key value violates unique constraint \"users_email_key\"" {
+                    CustomError::new(409, "User with this email already exists".to_string())
+                } else {
+                    CustomError::new(409, err.message().to_string())
+                }
+
+            }
             DieselError::NotFound => {
                 CustomError::new(404, "The User record not found".to_string())
             }
