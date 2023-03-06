@@ -7,6 +7,7 @@ use crate::{
 };
 use actix_web::{delete, get, post, put, web, HttpResponse};
 use serde_json::json;
+use uuid::Uuid;
 
 #[get("/posts")]
 async fn find_all() -> Result<HttpResponse, CustomError> {
@@ -15,7 +16,7 @@ async fn find_all() -> Result<HttpResponse, CustomError> {
 }
 
 #[get("/posts/{id}")]
-async fn find(id: web::Path<i32>) -> Result<HttpResponse, CustomError> {
+async fn find(id: web::Path<Uuid>) -> Result<HttpResponse, CustomError> {
     let post = Posts::find(id.into_inner())?;
     Ok(HttpResponse::Ok().json(post))
 }
@@ -28,7 +29,7 @@ async fn create(post: web::Json<Post>) -> Result<HttpResponse, CustomError> {
 
 #[put("/posts/{id}")]
 async fn update(
-    id: web::Path<i32>,
+    id: web::Path<Uuid>,
     post: web::Json<Post>,
 ) -> Result<HttpResponse, CustomError> {
     let post = Posts::update(id.into_inner(), post.into_inner())?;
@@ -36,7 +37,7 @@ async fn update(
 }
 
 #[delete("/posts/{id}")]
-async fn delete(id: web::Path<i32>) -> Result<HttpResponse, CustomError> {
+async fn delete(id: web::Path<Uuid>) -> Result<HttpResponse, CustomError> {
     let deleted_post = Posts::delete(id.into_inner())?;
     Ok(HttpResponse::Ok().json(json!({ "deleted": deleted_post })))
 }

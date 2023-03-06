@@ -1,7 +1,7 @@
 diesel::table! {
     posts (id) {
-        id -> Int4,
-        user_id -> Int4,
+        id -> Uuid,
+        user_id -> Uuid,
         title -> Varchar,
         body -> Text,
     }

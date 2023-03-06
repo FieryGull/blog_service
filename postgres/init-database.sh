@@ -12,8 +12,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
              );
 
     CREATE TABLE Posts (
-         id        SERIAL PRIMARY KEY,
-         user_id   SERIAL NOT NULL,
+         id        UUID NOT NULL PRIMARY KEY DEFAULT (uuid_generate_v4()),
+         user_id   UUID NOT NULL,
          title     VARCHAR NOT NULL,
          body      TEXT    NOT NULL
          );
