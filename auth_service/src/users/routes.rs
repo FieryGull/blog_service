@@ -26,8 +26,8 @@ async fn register(register_data: web::Json<RegisterUserSchema>) -> Result<HttpRe
                 Err(error)
             }
         },
-    };
-    Ok(HttpResponse::Ok().json(FilteredUser::from(user.unwrap())))
+    }?;
+    Ok(HttpResponse::Ok().json(FilteredUser::from(user)))
 }
 
 #[post("/auth/login")]
