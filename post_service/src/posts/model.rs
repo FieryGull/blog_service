@@ -1,14 +1,10 @@
 use crate::{
+    common_lib::{db, error_handler::CustomError},
     schema::posts as posts_table,
-    common_lib::{
-        db,
-        error_handler::CustomError
-    }
 };
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-
 
 #[derive(Serialize, Deserialize, AsChangeset)]
 #[diesel(table_name = posts_table)]
@@ -29,7 +25,9 @@ pub struct Posts {
 impl Posts {
     pub fn find_all(user_id: Uuid) -> Result<Vec<Self>, CustomError> {
         let conn = &mut db::connection()?;
-        let posts = posts_table::table.filter(posts_table::user_id.eq(user_id)).load::<Posts>(conn)?;
+        let posts = posts_table::table
+            .filter(posts_table::user_id.eq(user_id))
+            .load::<Posts>(conn)?;
         Ok(posts)
     }
 
@@ -62,12 +60,13 @@ impl Posts {
     }
 
     pub fn delete(id: Uuid, user_id: Uuid) -> Result<usize, CustomError> {
-        let conn =&mut db::connection()?;
-        let res = diesel::delete(posts_table::table
-            .filter(posts_table::id.eq(id))
-            .filter(posts_table::user_id.eq(user_id))
+        let conn = &mut db::connection()?;
+        let res = diesel::delete(
+            posts_table::table
+                .filter(posts_table::id.eq(id))
+                .filter(posts_table::user_id.eq(user_id)),
         )
-            .execute(conn)?;
+        .execute(conn)?;
         Ok(res)
     }
 }
@@ -78,7 +77,7 @@ impl Posts {
             id: Uuid::new_v4(),
             user_id,
             title,
-            body
+            body,
         }
     }
 }

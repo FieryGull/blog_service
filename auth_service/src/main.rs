@@ -1,11 +1,11 @@
 extern crate core;
 
-use actix_web::{App, HttpServer, middleware::Logger};
+use actix_web::{middleware::Logger, App, HttpServer};
 use std::env;
 
-mod users;
-mod schema;
 mod common_lib;
+mod schema;
+mod users;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
             .configure(users::init_routes)
             .wrap(Logger::new("%a %r %s %T"))
     })
-        .bind(&app_url)?
-        .run()
-        .await
+    .bind(&app_url)?
+    .run()
+    .await
 }

@@ -29,9 +29,7 @@ impl fmt::Display for CustomError {
 impl From<DieselError> for CustomError {
     fn from(error: DieselError) -> CustomError {
         match error {
-            DieselError::DatabaseError(_, err) => {
-                CustomError::new(409, err.message().to_string())
-            },
+            DieselError::DatabaseError(_, err) => CustomError::new(409, err.message().to_string()),
             DieselError::NotFound => {
                 CustomError::new(404, "The query object not found".to_string())
             }

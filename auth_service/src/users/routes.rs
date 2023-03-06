@@ -1,31 +1,34 @@
 use crate::{
-    common_lib::{
-        jwt_auth::JwtMiddleware, create_jwt_token,
-        error_handler::CustomError
-    },
-    users::model::{LoginUserSchema, RegisterUserSchema, User, FilteredUser},
-    users::basic_auth::{verify},
+    common_lib::{create_jwt_token, error_handler::CustomError, jwt_auth::JwtMiddleware},
+    users::basic_auth::verify,
+    users::model::{FilteredUser, LoginUserSchema, RegisterUserSchema, User},
 };
 use actix_web::{
     cookie::{time::Duration as ActixWebDuration, Cookie},
     get, post, web, HttpResponse,
 };
-use uuid::Uuid;
 use serde_json::json;
 use std::env;
-
+use uuid::Uuid;
 
 #[post("/auth/register")]
-async fn register(register_data: web::Json<RegisterUserSchema>) -> Result<HttpResponse, CustomError> {
+async fn register(
+    register_data: web::Json<RegisterUserSchema>,
+) -> Result<HttpResponse, CustomError> {
     let user = match User::create(User::from(register_data.into_inner())) {
         Ok(user) => Ok(user),
         Err(error) => {
-            if error.error_message == "duplicate key value violates unique constraint \"users_email_key\"" {
-                Err(CustomError::new(409,"User with this email already exists".to_string()))
+            if error.error_message
+                == "duplicate key value violates unique constraint \"users_email_key\""
+            {
+                Err(CustomError::new(
+                    409,
+                    "User with this email already exists".to_string(),
+                ))
             } else {
                 Err(error)
             }
-        },
+        }
     }?;
     Ok(HttpResponse::Ok().json(FilteredUser::from(user)))
 }
@@ -33,12 +36,13 @@ async fn register(register_data: web::Json<RegisterUserSchema>) -> Result<HttpRe
 #[post("/auth/login")]
 async fn login(login_data: web::Json<LoginUserSchema>) -> Result<HttpResponse, CustomError> {
     let db_user = User::find_by_email(&login_data.email);
-    let is_valid = db_user.as_ref().map_or(false, |user| verify(&login_data.password, &user.password));
+    let is_valid = db_user
+        .as_ref()
+        .map_or(false, |user| verify(&login_data.password, &user.password));
 
     if !is_valid {
         return Err {
-            0: CustomError::new(401,
-                                "Invalid email or password".to_string())
+            0: CustomError::new(401, "Invalid email or password".to_string()),
         };
     }
     let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET not found.");
@@ -50,7 +54,9 @@ async fn login(login_data: web::Json<LoginUserSchema>) -> Result<HttpResponse, C
         .http_only(true)
         .finish();
 
-    Ok(HttpResponse::Ok().cookie(cookie).json(json!({"token": token})))
+    Ok(HttpResponse::Ok()
+        .cookie(cookie)
+        .json(json!({ "token": token })))
 }
 
 #[get("/auth/logout")]
@@ -67,15 +73,16 @@ async fn logout(_: JwtMiddleware) -> Result<HttpResponse, CustomError> {
 #[get("/users")]
 async fn find_all(_: JwtMiddleware) -> Result<HttpResponse, CustomError> {
     let users = web::block(|| User::find_all()).await.unwrap();
-    let users = users.unwrap().into_iter()
+    let users = users
+        .unwrap()
+        .into_iter()
         .map(|user| FilteredUser::from(user))
         .collect::<Vec<FilteredUser>>();
     Ok(HttpResponse::Ok().json(users))
 }
 
 #[get("/users/{id}")]
-async fn find(id: web::Path<Uuid>,
-              _: JwtMiddleware) -> Result<HttpResponse, CustomError> {
+async fn find(id: web::Path<Uuid>, _: JwtMiddleware) -> Result<HttpResponse, CustomError> {
     let user = User::find_by_id(id.into_inner())?;
     Ok(HttpResponse::Ok().json(FilteredUser::from(user)))
 }

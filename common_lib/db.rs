@@ -16,8 +16,10 @@ lazy_static! {
         let db_port = env::var("DB_PORT").expect("DB_PORT not found.");
         let db_name = env::var("POSTGRES_DB").expect("POSTGRES_DB not found.");
 
-        let db_url = format!("postgres://{}:{}@{}:{}/{}",
-            &db_user, &db_password, &db_host, &db_port, &db_name);
+        let db_url = format!(
+            "postgres://{}:{}@{}:{}/{}",
+            &db_user, &db_password, &db_host, &db_port, &db_name
+        );
 
         let manager = ConnectionManager::<PgConnection>::new(db_url);
         Pool::new(manager).expect("Failed to create db pool")

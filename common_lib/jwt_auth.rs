@@ -1,16 +1,20 @@
 use crate::common_lib::error_handler::CustomError;
 use actix_web::dev::Payload;
 use actix_web::{http, FromRequest, HttpMessage, HttpRequest};
-use jsonwebtoken::{decode, DecodingKey, encode, Validation, Header, EncodingKey};
+use chrono::{Duration, Utc};
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
-use chrono::{Utc, Duration};
 use std::env;
 use std::future::{ready, Ready};
 
-
 pub fn create_jwt_token(jwt_secret: String, sub: String) -> String {
     let claims = TokenClaims::new(sub);
-    encode(&Header::default(), &claims, &EncodingKey::from_secret(jwt_secret.as_ref())).unwrap()
+    encode(
+        &Header::default(),
+        &claims,
+        &EncodingKey::from_secret(jwt_secret.as_ref()),
+    )
+    .unwrap()
 }
 
 #[derive(Serialize, Deserialize)]

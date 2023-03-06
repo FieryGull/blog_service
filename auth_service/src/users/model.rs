@@ -1,15 +1,11 @@
 use crate::{
-    common_lib::{
-        error_handler::CustomError,
-        db,
-    },
+    common_lib::{db, error_handler::CustomError},
     schema::users as users_table,
-    users::basic_auth::hash_password
+    users::basic_auth::hash_password,
 };
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-
 
 #[derive(Serialize, Deserialize, Queryable, AsChangeset, Insertable)]
 #[diesel(table_name = users_table)]
@@ -40,7 +36,6 @@ pub struct LoginUserSchema {
     pub password: String,
 }
 
-
 impl User {
     pub fn find_all() -> Result<Vec<Self>, CustomError> {
         let conn = &mut db::connection()?;
@@ -50,13 +45,17 @@ impl User {
 
     pub fn find_by_id(id: Uuid) -> Result<Self, CustomError> {
         let conn = &mut db::connection()?;
-        let user = users_table::table.filter(users_table::id.eq(id)).first(conn)?;
+        let user = users_table::table
+            .filter(users_table::id.eq(id))
+            .first(conn)?;
         Ok(user)
     }
 
     pub fn find_by_email(email: &String) -> Result<Self, CustomError> {
         let conn = &mut db::connection()?;
-        let user = users_table::table.filter(users_table::email.eq(email)).first(conn)?;
+        let user = users_table::table
+            .filter(users_table::email.eq(email))
+            .first(conn)?;
         Ok(user)
     }
 
@@ -70,7 +69,13 @@ impl User {
 }
 
 impl From<RegisterUserSchema> for User {
-    fn from(RegisterUserSchema { name, email, password }: RegisterUserSchema) -> Self {
+    fn from(
+        RegisterUserSchema {
+            name,
+            email,
+            password,
+        }: RegisterUserSchema,
+    ) -> Self {
         User {
             id: Uuid::new_v4(),
             name: name.into(),
@@ -81,11 +86,11 @@ impl From<RegisterUserSchema> for User {
 }
 
 impl From<User> for FilteredUser {
-    fn from(User { id, name, email, .. }: User) -> Self {
-        FilteredUser {
-            id,
-            name,
-            email,
-        }
+    fn from(
+        User {
+            id, name, email, ..
+        }: User,
+    ) -> Self {
+        FilteredUser { id, name, email }
     }
 }
