@@ -16,9 +16,18 @@ use std::env;
 
 
 #[post("/auth/register")]
-async fn register(user: web::Json<RegisterUserSchema>) -> Result<HttpResponse, CustomError> {
-    let user = User::create(User::from(user.into_inner()))?;
-    Ok(HttpResponse::Ok().json(FilteredUser::from(user)))
+async fn register(register_data: web::Json<RegisterUserSchema>) -> Result<HttpResponse, CustomError> {
+    let user = match User::create(User::from(register_data.into_inner())) {
+        Ok(user) => Ok(user),
+        Err(error) => {
+            if error.error_message == "duplicate key value violates unique constraint \"users_email_key\"" {
+                Err(CustomError::new(409,"User with this email already exists".to_string()))
+            } else {
+                Err(error)
+            }
+        },
+    };
+    Ok(HttpResponse::Ok().json(FilteredUser::from(user.unwrap())))
 }
 
 #[post("/auth/login")]
