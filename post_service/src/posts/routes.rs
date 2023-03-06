@@ -1,5 +1,10 @@
-use crate::posts::{Post, Posts};
-use crate::error_handler::CustomError;
+use crate::{
+    posts::{Post, Posts},
+    common_lib::{
+        error_handler::CustomError,
+        jwt_auth::JwtMiddleware
+    },
+};
 use actix_web::{delete, get, post, put, web, HttpResponse};
 use serde_json::json;
 

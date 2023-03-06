@@ -3,15 +3,16 @@ FROM rust:1.67.1-slim-buster as build
 RUN cargo new app
 WORKDIR /app
 
-COPY ./Cargo.lock ./Cargo.lock
-COPY ./Cargo.toml ./Cargo.toml
+COPY ./post_service/Cargo.lock ./Cargo.lock
+COPY ./post_service/Cargo.toml ./Cargo.toml
 
 # this build step will cache your dependencies
 RUN apt-get update && apt-get install libpq-dev -y
 RUN cargo build --release
 RUN rm ./target/release/deps/post_service*
 
-COPY ./src ./src
+COPY ./post_service/src ./src
+COPY ./common_lib ./src/common_lib
 RUN cargo build --release
 
 

@@ -1,6 +1,10 @@
-use crate::db;
-use crate::error_handler::CustomError;
-use crate::schema::posts as posts_table;
+use crate::{
+    schema::posts as posts_table,
+    common_lib::{
+        db,
+        error_handler::CustomError
+    }
+};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 

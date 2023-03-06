@@ -14,8 +14,8 @@ services:
   post_service:
     container_name: post_service
     build:
-      context: post_service/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: post_service/Dockerfile
     ports:
       - $POST_SERVICE_PORT:$POST_SERVICE_PORT
     env_file:

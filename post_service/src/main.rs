@@ -1,10 +1,9 @@
 use actix_web::{App, HttpServer};
 use std::env;
 
-mod db;
 mod posts;
-mod error_handler;
 mod schema;
+mod common_lib;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
