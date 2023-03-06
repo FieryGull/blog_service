@@ -1,0 +1,54 @@
+name: "Test and linting services"
+
+on: [push]
+
+jobs:
+  auth_service:
+    name: "Testing and Linting auth_service"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out the repo"
+        uses: actions/checkout@v3
+
+      - uses: "actions-rs/toolchain@v1"
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: clippy
+
+      - name: "Copy common_lib"
+        run: "cp -r ./common_lib ./auth_service/src/common_lib"
+
+      - name: "Run cargo clippy"
+        run: "cargo clippy -- -D warnings"
+        working-directory: ./auth_service
+
+      - name: "Run cargo test"
+        run: "cargo test"
+        working-directory: ./auth_service
+
+  post_service:
+    name: "Testing and Linting post_service"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out the repo"
+        uses: actions/checkout@v3
+
+      - uses: "actions-rs/toolchain@v1"
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: clippy
+
+      - name: "Copy common_lib"
+        run: "cp -r ./common_lib ./post_service/src/common_lib"
+
+      - name: "Run cargo clippy"
+        run: "cargo clippy -- -D warnings"
+        working-directory: ./post_service
+
+      - name: "Run cargo test"
+        run: "cargo test"
+        working-directory: ./post_service
