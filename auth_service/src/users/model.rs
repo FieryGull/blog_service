@@ -1,18 +1,11 @@
 use crate::db;
 use crate::error_handler::CustomError;
 use crate::schema::users as users_table;
+use crate::users::basic_auth::hash_password;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-
-// #[derive(Serialize, Deserialize, AsChangeset, Insertable)]
-// #[diesel(table_name = users_table)]
-// pub struct DbInsertUser {
-//     pub name: String,
-//     pub email: String,
-//     pub password: String,
-// }
 
 #[derive(Serialize, Deserialize, Queryable, AsChangeset, Insertable)]
 #[diesel(table_name = users_table)]
@@ -24,10 +17,10 @@ pub struct User {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct TokenClaims {
-    pub sub: String,
-    pub iat: usize,
-    pub exp: usize,
+pub struct FilteredUser {
+    pub id: Uuid,
+    pub name: String,
+    pub email: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -51,9 +44,15 @@ impl User {
         Ok(users)
     }
 
-    pub fn find(id: Uuid) -> Result<Self, CustomError> {
+    pub fn find_by_id(id: Uuid) -> Result<Self, CustomError> {
         let conn = &mut db::connection()?;
         let user = users_table::table.filter(users_table::id.eq(id)).first(conn)?;
+        Ok(user)
+    }
+
+    pub fn find_by_email(email: &String) -> Result<Self, CustomError> {
+        let conn = &mut db::connection()?;
+        let user = users_table::table.filter(users_table::email.eq(email)).first(conn)?;
         Ok(user)
     }
 
@@ -72,7 +71,17 @@ impl From<RegisterUserSchema> for User {
             id: Uuid::new_v4(),
             name: name.into(),
             email: email.into(),
-            password: password.into(),
+            password: hash_password(&password),
+        }
+    }
+}
+
+impl From<User> for FilteredUser {
+    fn from(User { id, name, email, .. }: User) -> Self {
+        FilteredUser {
+            id,
+            name,
+            email,
         }
     }
 }
