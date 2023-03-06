@@ -2,8 +2,8 @@ services:
   auth_service:
     container_name: auth_service
     build:
-      context: auth_service/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: auth_service/Dockerfile
     ports:
       - $AUTH_SERVICE_PORT:$AUTH_SERVICE_PORT
     env_file:

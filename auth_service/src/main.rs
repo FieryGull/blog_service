@@ -3,11 +3,9 @@ extern crate core;
 use actix_web::{App, HttpServer, middleware::Logger};
 use std::env;
 
-mod db;
 mod users;
-mod error_handler;
 mod schema;
-mod jwt_auth;
+mod common_lib;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

@@ -1,4 +1,4 @@
-use crate::error_handler::CustomError;
+use crate::common_lib::error_handler::CustomError;
 use diesel::pg::PgConnection;
 use diesel::r2d2::ConnectionManager;
 use lazy_static::lazy_static;

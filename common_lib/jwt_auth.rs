@@ -1,12 +1,11 @@
-use crate::error_handler::CustomError;
-use std::future::{ready, Ready};
-
+use crate::common_lib::error_handler::CustomError;
 use actix_web::dev::Payload;
 use actix_web::{http, FromRequest, HttpMessage, HttpRequest};
 use jsonwebtoken::{decode, DecodingKey, encode, Validation, Header, EncodingKey};
 use serde::{Deserialize, Serialize};
 use chrono::{Utc, Duration};
 use std::env;
+use std::future::{ready, Ready};
 
 
 pub fn create_jwt_token(jwt_secret: String, sub: String) -> String {

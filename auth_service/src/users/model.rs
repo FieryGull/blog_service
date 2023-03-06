@@ -1,7 +1,11 @@
-use crate::db;
-use crate::error_handler::CustomError;
-use crate::schema::users as users_table;
-use crate::users::basic_auth::hash_password;
+use crate::{
+    common_lib::{
+        error_handler::CustomError,
+        db,
+    },
+    schema::users as users_table,
+    users::basic_auth::hash_password
+};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;

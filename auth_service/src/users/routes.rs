@@ -1,8 +1,10 @@
 use crate::{
-    jwt_auth::{JwtMiddleware, create_jwt_token},
+    common_lib::{
+        jwt_auth::JwtMiddleware, create_jwt_token,
+        error_handler::CustomError
+    },
     users::model::{LoginUserSchema, RegisterUserSchema, User, FilteredUser},
     users::basic_auth::{verify},
-    error_handler::CustomError,
 };
 use actix_web::{
     cookie::{time::Duration as ActixWebDuration, Cookie},
