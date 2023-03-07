@@ -78,8 +78,8 @@ impl From<RegisterUserSchema> for User {
     ) -> Self {
         User {
             id: Uuid::new_v4(),
-            name: name.into(),
-            email: email.into(),
+            name,
+            email,
             password: hash_password(&password),
         }
     }

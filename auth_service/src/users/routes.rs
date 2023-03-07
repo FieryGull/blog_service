@@ -41,9 +41,10 @@ async fn login(login_data: web::Json<LoginUserSchema>) -> Result<HttpResponse, C
         .map_or(false, |user| verify(&login_data.password, &user.password));
 
     if !is_valid {
-        return Err {
-            0: CustomError::new(401, "Invalid email or password".to_string()),
-        };
+        return Err (CustomError::new(
+            401,
+            "Invalid email or password".to_string()),
+        );
     }
     let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET not found.");
     let token = create_jwt_token(jwt_secret, db_user.as_ref().unwrap().id.to_string());
@@ -72,11 +73,11 @@ async fn logout(_: JwtMiddleware) -> Result<HttpResponse, CustomError> {
 
 #[get("/users")]
 async fn find_all(_: JwtMiddleware) -> Result<HttpResponse, CustomError> {
-    let users = web::block(|| User::find_all()).await.unwrap();
+    let users = web::block(User::find_all).await.unwrap();
     let users = users
         .unwrap()
         .into_iter()
-        .map(|user| FilteredUser::from(user))
+        .map(FilteredUser::from)
         .collect::<Vec<FilteredUser>>();
     Ok(HttpResponse::Ok().json(users))
 }

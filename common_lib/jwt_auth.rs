@@ -1,3 +1,5 @@
+#![allow(dead_code, unused)]
+
 use crate::common_lib::error_handler::CustomError;
 use actix_web::dev::Payload;
 use actix_web::{http, FromRequest, HttpMessage, HttpRequest};
