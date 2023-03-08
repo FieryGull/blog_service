@@ -1,5 +1,5 @@
 use crate::{
-    common_lib::{create_jwt_token, error_handler::CustomError, jwt_auth::JwtMiddleware},
+    common_lib::{error_handler::CustomError, jwt_auth::JwtMiddleware, Token},
     users::basic_auth::verify,
     users::model::{FilteredUser, LoginUserSchema, RegisterUserSchema, User},
 };
@@ -47,7 +47,7 @@ async fn login(login_data: web::Json<LoginUserSchema>) -> Result<HttpResponse, C
         );
     }
     let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET not found.");
-    let token = create_jwt_token(jwt_secret, db_user.as_ref().unwrap().id.to_string());
+    let token = Token::create( db_user.as_ref().unwrap().id.to_string(), jwt_secret).unwrap();
 
     let cookie = Cookie::build("token", token.to_owned())
         .path("/")

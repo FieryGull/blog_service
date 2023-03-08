@@ -17,3 +17,16 @@ pub fn verify(password: &String, hash: &str) -> bool {
         .verify_password(password.as_bytes(), &parsed_hash)
         .map_or(false, |_| true)
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn succeed_hash_and_verify_password() {
+        let pwd = String::from("test_pwd");
+        let hash_pwd = hash_password(&pwd);
+        assert!(verify(&pwd, &hash_pwd))
+    }
+}
