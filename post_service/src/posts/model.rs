@@ -13,7 +13,7 @@ pub struct NewPost {
     pub body: String,
 }
 
-#[derive(Serialize, Deserialize, Queryable, AsChangeset, Insertable)]
+#[derive(Serialize, Deserialize, Queryable, AsChangeset, Insertable, PartialEq)]
 #[diesel(table_name = posts_table)]
 pub struct Posts {
     pub id: Uuid,

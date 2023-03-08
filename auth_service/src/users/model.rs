@@ -16,7 +16,7 @@ pub struct User {
     pub password: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq)]
 pub struct FilteredUser {
     pub id: Uuid,
     pub name: String,
