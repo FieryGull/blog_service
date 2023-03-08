@@ -15,7 +15,7 @@
 Имеет эндпоинты:
 1. ```POST /posts``` - Создание поста
 1. ```PUT /posts/{id}``` - Изменение поста
-1. ```PUT /posts/{id}``` - Удаление поста
+1. ```DELETE /posts/{id}``` - Удаление поста
 1. ```GET /posts``` - Получение информации о всех постах
 1. ```GET /posts/{id}``` - Получение информации о конкретном посте (по id)
 
@@ -45,6 +45,12 @@ cargo test --manifest-path ./auth_service/Cargo.toml
 cargo test --manifest-path ./post_service/Cargo.toml
 ```
 
+_Примечание:_ Для запуска тестов локально, как и для запуска сервисов вне докера, необходимо создать symlinks для директории common_lib  
+Для этого выполните команды:
+```shell
+ln -rs common_lib/ ./auth_service/src/
+ln -rs common_lib/ ./post_service/src/
+```
 
 
 
