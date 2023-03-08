@@ -24,7 +24,9 @@ _Примечание:_ Все эндпоинты, за исключением `
 Для упрощенного взаимодействия с API, в корневой директории проекта есть подготовленные запросы для Postman - [Blog service.postman_collection.json](Blog%20service.postman_collection.json)
 
 ### Пример запуска
-Выполните команду из корневой директории проекта:
+Создайте файл ```.env``` и заполните его значениями согласно примеру из файла ```.env.template```
+
+Далее, выполните команду из корневой директории проекта:
 ```shell
 docker compose up -d --build
 ```
@@ -32,6 +34,19 @@ docker compose up -d --build
 ```shell
 docker compose down -v --rmi="all"
 ```
+
+### Тестирование
+
+Тесты и линтер запускаются в github actions на каждый push.
+
+Для локального запуска тестов выполните команды:
+```shell
+cargo test --manifest-path ./auth_service/Cargo.toml
+cargo test --manifest-path ./post_service/Cargo.toml
+```
+
+
+
 
 
 

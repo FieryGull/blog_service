@@ -3,16 +3,21 @@ mod integration_tests {
     use crate::users::*;
     use actix_web::{test::{self, TestRequest}, App, http::header::AUTHORIZATION};
     use serde::{Deserialize, Serialize};
+    use dotenv::dotenv;
+    use random_string::generate;
 
     #[actix_rt::test]
     async fn test_endpoints() {
+        dotenv().ok();
+        let charset = "abcdefghijklmnopqrstuvwxyz";
+
         #[derive(Serialize, Deserialize)]
         struct Token {
             token: String
         }
 
         let name = "test_name".to_string();
-        let email = "test@mail.com".to_string();
+        let email = format!("{}@mail.com", generate(6, charset)).to_string();
         let password = "test".to_string();
 
         let register_schema = RegisterUserSchema{

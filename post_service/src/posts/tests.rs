@@ -5,9 +5,11 @@ mod integration_tests {
     use crate::common_lib::*;
     use actix_web::{test::{self, TestRequest}, App, http::header::AUTHORIZATION};
     use uuid::Uuid;
+    use dotenv::dotenv;
 
     #[actix_rt::test]
     async fn test_endpoints() {
+        dotenv().ok();
         let user_id = Uuid::new_v4().to_string();
         let title = "test_title".to_string();
         let body = "test_body".to_string();

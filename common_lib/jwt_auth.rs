@@ -93,6 +93,7 @@ impl FromRequest for JwtMiddleware {
 mod tests {
     use uuid::Uuid;
     use super::*;
+    use dotenv::dotenv;
 
     #[test]
     fn succeed_token_claim_new() {
@@ -107,6 +108,7 @@ mod tests {
 
     #[test]
     fn succeed_create_jwt_token() {
+        dotenv().ok();
         let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET not found.");
         let id = Uuid::new_v4().to_string();
         assert!(Token::create(id, jwt_secret).is_ok());
@@ -114,6 +116,7 @@ mod tests {
 
     #[test]
     fn succeed_verify_jwt_token() {
+        dotenv().ok();
         let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET not found.");
         let id = Uuid::new_v4().to_string();
         let token = Token::create(id, jwt_secret.clone());
