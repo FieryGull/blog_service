@@ -6,7 +6,7 @@ env:
   POSTGRES_DB: blog_service
   POSTGRES_USER: blog_user
   POSTGRES_PASSWORD: blog_password
-  DB_HOST: 0.0.0.0
+  DB_HOST: localhost
   DB_PORT: 5432
 
   AUTH_SERVICE_PORT: 8000
@@ -26,9 +26,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_USER: $POSTGRES_USER
-          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-          POSTGRES_DB: $POSTGRES_DB
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
         ports:
           - 5432:5432
     steps:
@@ -63,9 +63,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_USER: $POSTGRES_USER
-          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-          POSTGRES_DB: $POSTGRES_DB
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
         ports:
           - 5432:5432
     steps:
